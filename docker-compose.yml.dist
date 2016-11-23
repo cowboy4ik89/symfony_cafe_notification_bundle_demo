@@ -1,0 +1,42 @@
+## You should provide your own port binding. 
+## Current configuration is correct,
+## but these prots may be in use in your system already. 
+##
+## Use at your own risk, Luke! 
+
+nginx:
+  build: docker/nginx
+  ports:
+      - "8080:80"
+  links:
+    - php
+  volumes:
+    - ./application:/var/www/app  
+
+php:
+  build: docker/php-fpm
+  volumes:
+    - ./application:/var/www/app
+  working_dir: /var/www/app  
+  links:
+    - mysql
+    - redis
+
+mysql:
+  image: mysql
+  ports:
+      - "4406:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: app
+    MYSQL_USER: root
+    MYSQL_PASSWORD: root
+
+redis:
+  image: redis:alpine
+  ports:
+    - 6379:6379
+
+
+
+
